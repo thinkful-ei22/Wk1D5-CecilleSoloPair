@@ -1,6 +1,6 @@
-//Creates a function called getGroceries - an interactive Shopping List
+//Creates an anonymous function with the goal of an interactive Shopping List
 
-$(const getGroceries = function() {
+$(function() {
 
 //Event Listener for the form's submit button
 
