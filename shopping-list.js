@@ -28,7 +28,6 @@ function generateItemElement(item, itemIndex, template) {
     </li>`;
 }
 
-
 function generateShoppingItemsString(shoppingList) {
   console.log('Generating shopping list element');
 
@@ -85,6 +84,22 @@ function displayUncheckedItemsOnly() {
   })
 }
 
+//this function is responsible for dynamic searching of STORE elements
+
+function searchFilter() {
+  console.log('`hideElement` ran');
+
+  $('.js-shopping-list-entry').keyup(function(event) {
+    let textInput = event.target.value;
+    console.log(textInput);
+    const itemsSelector = $('span.js-shopping-item').each((index, item) => {
+      let selector = $(item).closest('li');
+      item.innerText.includes(textInput) ?
+        selector.removeClass('hidden') :
+        selector.addClass('hidden');
+    });
+  });
+}
 
 function getItemIndexFromElement(item) {
   const itemIndexString = $(item)
@@ -137,6 +152,7 @@ function handleShoppingList() {
   handleItemCheckClicked();
   handleDeleteItemClicked();
   displayUncheckedItemsOnly();
+  searchFilter();
 }
 
 // when the page loads, call `handleShoppingList`
