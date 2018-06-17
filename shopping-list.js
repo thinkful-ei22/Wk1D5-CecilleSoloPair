@@ -10,7 +10,8 @@ const STORE = {
     {name: 'oranges', checked: false},
     {name: 'milk', checked: true},
     {name: 'bread', checked: false}
-  ]
+  ],
+  displayUncheckedItemsOnly: false
 };
 const checkedClass = 'shopping-item__checked';
 //Creates a new element
@@ -38,16 +39,44 @@ function generateShoppingItemsString(shoppingList) {
   return items.join('');
 }
 
+function generateShoppingList(store) {
+  console.log('Generating shopping list element');
+  console.log(STORE);
+
+  const items = generateShoppingItemsString(store.items.filter(item => {
+    if (store.displayUncheckedItemsOnly) {
+      return !item.checked; //returns unchecked
+    } else {
+      return true; //returns all
+    }
+  }));
+
+  return `
+    <h1>Shopping List</h1>
+    <form id="js-shopping-list-form">
+        <label for="shopping-list-entry">Add an item</label>
+        <input type="text" name="shopping-list-entry" class="js-shopping-list-entry" placeholder="e.g., broccoli">
+        <button type="submit">Add item</button>
+        <label for="display-unchecked-items">Display Unchecked Items Only</label>
+        <input type="checkbox" class="display-unchecked-items" ${store.displayUncheckedItemsOnly ? 'checked' : ''}>
+    </form>
+    <ul class="shopping-list js-shopping-list">
+      ${items}
+    </ul>`;
+}
+
 // this function will be responsible for rendering the shopping list in
 // the DOM
 
 function renderShoppingList() {
   // render the shopping list in the DOM
   console.log('`renderShoppingList` ran');
-  const shoppingListItemsString = generateShoppingItemsString(STORE.items);
+  console.log(STORE);
+  const shoppingList = generateShoppingList(STORE);
+
 
   // insert that HTML into the DOM
-  $('.js-shopping-list').html(shoppingListItemsString);
+  $('.container').html(shoppingList);
 }
 
 function addItemToShoppingList(itemName) {
@@ -77,13 +106,11 @@ function displayUncheckedItemsOnly() {
   console.log('`displayUncheckedItemsOnly` ran');
 
   $('#js-shopping-list-form').on('change', '.display-unchecked-items', event => {
-    const checkedSelector = $(`span.${checkedClass}`).closest('li');
-    if (event.target.checked) {
-      checkedSelector.addClass('hidden');
-    } else {
-      checkedSelector.removeClass('hidden');
-    }
+
+    STORE.displayUncheckedItemsOnly = !STORE.displayUncheckedItemsOnly;
+    renderShoppingList();
   })
+
 }
 
 //this function is responsible for dynamic searching of STORE elements
