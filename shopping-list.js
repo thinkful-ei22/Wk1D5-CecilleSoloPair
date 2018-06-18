@@ -129,7 +129,7 @@ function displayUncheckedItemsOnly() {
 // Function that allows for dynamic search filtering in textbox
 
 function searchFilter() {
-  $('.container').keyup(function(event) {
+  $('.container').on('keyup', '.js-shopping-list-entry', function(event) {
     console.log('`searchFilter` ran');
     let textInput = event.target.value;
     console.log(textInput);
