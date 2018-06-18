@@ -4,22 +4,31 @@
 
 const STORE = {
   items: [
-    {name: 'apples', checked: false},
-    {name: 'oranges', checked: false},
-    {name: 'milk', checked: true},
-    {name: 'bread', checked: false}
+    {name: 'apples', checked: false, edit: false},
+    {name: 'oranges', checked: false, edit: false},
+    {name: 'milk', checked: true, edit: false},
+    {name: 'bread', checked: false, edit: false}
   ],
   displayUncheckedItemsOnly: false
 };
 
 const checkedClass = 'shopping-item__checked';
 
+function itemHtmlString(item) {
+  if (item.edit) {
+    return `<input type="text" value="${item.name}">`
+  } else {
+    return `<span class="shopping-item js-shopping-item ${item.checked ? checkedClass : ''}">${item.name}</span>`;
+  }
+
+}
+
 //Creates a new element
 
 function generateItemElement(item, itemIndex, template) {
   return `
     <li class="js-item-index-element" data-item-index="${itemIndex}">
-      <span class="shopping-item js-shopping-item ${item.checked ? checkedClass : ''}">${item.name}</span>
+      ${itemHtmlString(item)}
       <div class="shopping-item-controls">
         <button class="shopping-item-toggle js-item-toggle">
             <span class="button-label">check</span>
@@ -36,7 +45,6 @@ function generateItemElement(item, itemIndex, template) {
 //First helper function which allows the renderShoppingList function
 
 function generateShoppingItemsString(shoppingList) {
-  console.log('Generating shopping list element');
 
   const items = shoppingList.map((item, index) => generateItemElement(item, index));
 
@@ -46,8 +54,6 @@ function generateShoppingItemsString(shoppingList) {
 //Second helper function which allows the renderShoppingList function to execute
 
 function generateShoppingList(store) {
-  console.log('Generating shopping list element');
-  console.log(STORE);
 
   const items = generateShoppingItemsString(store.items.filter(item => {
     if (store.displayUncheckedItemsOnly) {
@@ -86,7 +92,7 @@ function renderShoppingList() {
 
 function addItemToShoppingList(itemName) {
   console.log(`Adding "${itemName}" to shopping list`);
-  STORE.items.push({name: itemName, checked: false});
+  STORE.items.push({name: itemName, checked: false, edit: false});
 }
 
 // Function that adds new item to the shopping list
@@ -174,7 +180,8 @@ function handleEditItemClicked() {
   $('.container').on('click', `.js-item-edit`, event => {
     console.log('`handleEditItemClicked` ran');
         const itemIndex = getItemIndexFromElement(event.currentTarget);
-        editListItem(itemIndex);
+        const itemName = $(event.currentTarget).find('.shopping-item').val();
+        editListItem(itemIndex, itemName);
         renderShoppingList();
   })
 }
@@ -189,10 +196,9 @@ function deleteListItem(itemIndex) {
 
 //Helper function for handleEditItemClicked function
 
-function editListItem(itemIndex) {
-  console.log(`Editing item name at index ${itemIndex} from shopping list`);
-  STORE.items[itemIndex].name = 'apple';
-
+function editListItem(itemIndex, itemName) {
+  console.log(`Editing item name at index ${itemIndex} in shopping list`);
+  STORE.items[itemIndex].edit = true;
 }
 
 // Callback function for when the page loads
@@ -202,6 +208,7 @@ function handleShoppingList() {
   handleNewItemSubmit();
   handleItemCheckClicked();
   handleDeleteItemClicked();
+  handleEditItemClicked();
   displayUncheckedItemsOnly();
   searchFilter();
   renderShoppingList();
