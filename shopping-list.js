@@ -16,12 +16,28 @@ const checkedClass = 'shopping-item__checked';
 
 function itemHtmlString(item) {
   if (item.edit) {
-    return `<input type="text" value="${item.name}">`
+    return `
+      <span class="shopping-item js-shopping-item ${item.checked ? checkedClass : ''} " style="display: none;">${item.name}</span>
+      <input type="text" value="${item.name}">`
   } else {
     return `<span class="shopping-item js-shopping-item ${item.checked ? checkedClass : ''}">${item.name}</span>`;
   }
-
 }
+
+function itemEditSaveHtmlString(item) {
+  if (item.edit){
+    return `
+    <button class="shopping-item-edit js-item-save">
+        <span class="button-label">save</span>
+    </button>`;
+  } else {
+    return `
+    <button class="shopping-item-edit js-item-edit">
+        <span class="button-label">edit</span>
+    </button>`;
+  }
+}
+
 
 //Creates a new element
 
@@ -36,9 +52,7 @@ function generateItemElement(item, itemIndex, template) {
         <button class="shopping-item-delete js-item-delete">
             <span class="button-label">delete</span>
         </button>
-        <button class="shopping-item-edit js-item-edit">
-            <span class="button-label">edit</span>
-        </button>
+        ${itemEditSaveHtmlString(item)}
       </div>
     </li>`;
 }
@@ -186,6 +200,16 @@ function handleEditItemClicked() {
   })
 }
 
+function handleSaveItemClicked() {
+  $('.container').on('click', `.js-item-save`, event => {
+    const itemIndex = getItemIndexFromElement(event.currentTarget);
+    console.log($(event.currentTarget).find('input'))
+    const newItemName = $(event.currentTarget).closest('li').find('input').val();
+    saveEditListItem(itemIndex, newItemName);
+    renderShoppingList();
+  });
+}
+
 // Helper function for handleDeleteItemClicked function
 
 function deleteListItem(itemIndex) {
@@ -201,6 +225,14 @@ function editListItem(itemIndex, itemName) {
   STORE.items[itemIndex].edit = true;
 }
 
+//Helper function for handleEditItemClicked function
+
+function saveEditListItem(itemIndex, newItemName) {
+  console.log(`Editing item name at index ${itemIndex} in shopping list`);
+  STORE.items[itemIndex].edit = false;
+  STORE.items[itemIndex].name = newItemName;
+}
+
 // Callback function for when the page loads
 
 function handleShoppingList() {
@@ -209,6 +241,7 @@ function handleShoppingList() {
   handleItemCheckClicked();
   handleDeleteItemClicked();
   handleEditItemClicked();
+  handleSaveItemClicked();
   displayUncheckedItemsOnly();
   searchFilter();
   renderShoppingList();
