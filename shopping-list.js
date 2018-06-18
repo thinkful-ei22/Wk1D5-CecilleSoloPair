@@ -14,6 +14,8 @@ const STORE = {
 
 const checkedClass = 'shopping-item__checked';
 
+//Helper function for handleSaveItemClicked
+
 function itemHtmlString(item) {
   if (item.edit) {
     return `
@@ -23,6 +25,8 @@ function itemHtmlString(item) {
     return `<span class="shopping-item js-shopping-item ${item.checked ? checkedClass : ''}">${item.name}</span>`;
   }
 }
+
+//Helper function for handleSaveItemClicked
 
 function itemEditSaveHtmlString(item) {
   if (item.edit){
@@ -37,7 +41,6 @@ function itemEditSaveHtmlString(item) {
     </button>`;
   }
 }
-
 
 //Creates a new element
 
@@ -225,7 +228,7 @@ function editListItem(itemIndex, itemName) {
   STORE.items[itemIndex].edit = true;
 }
 
-//Helper function for handleEditItemClicked function
+//Helper function for handleSaveItemClicked function
 
 function saveEditListItem(itemIndex, newItemName) {
   console.log(`Editing item name at index ${itemIndex} in shopping list`);
